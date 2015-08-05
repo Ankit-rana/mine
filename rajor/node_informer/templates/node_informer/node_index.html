@@ -1,0 +1,348 @@
+
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <title>RazorUI</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <link rel="stylesheet" type="text/css" href="{% static 'node_informer/css/bootstrap.min.css' %}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="{% static 'node_informer/js/bootstrap.min.js' %}"></script>
+
+<style type="text/css">
+.css-treeview ul,
+.css-treeview li
+{
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.css-treeview input
+{
+    position: absolute;
+    opacity: 0;
+}
+
+.css-treeview
+{
+    font: normal 11px "Segoe UI", Arial, Sans-serif;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.css-treeview a
+{
+    color: #00f;
+    text-decoration: none;
+}
+
+.css-treeview a:hover
+{
+    text-decoration: underline;
+}
+
+.css-treeview input + label + ul
+{
+    margin: 0 0 0 22px;
+}
+.css-treeview input ~ ul
+{
+    display: none;
+}
+
+.css-treeview label,
+.css-treeview label::before
+{
+    cursor: pointer;
+}
+
+.css-treeview input:disabled + label
+{
+    cursor: default;
+    opacity: .6;
+}
+
+.css-treeview input:checked:not(:disabled) ~ ul
+{
+    display: block;
+}
+
+.css-treeview label,
+.css-treeview label::before
+{
+    background:url("../../static/node_informer/icons.png") no-repeat right bottom;
+}
+
+.css-treeview label,
+.css-treeview a,
+.css-treeview label::before
+{
+    display: inline-block;
+    height: 16px;
+    line-height: 16px;
+    vertical-align: middle;
+}
+
+.css-treeview label
+{
+    background-position: 18px 0;
+}
+.css-treeview label::before
+{
+    content: "";
+    width: 16px;
+    margin: 0 22px 0 0;
+    vertical-align: middle;
+    background-position: 0 -32px;
+}
+
+.css-treeview input:checked + label::before
+{
+    background-position: 0 -16px;
+}
+
+/* webkit adjacent element selector bugfix */
+@media screen and (-webkit-min-device-pixel-ratio:0)
+{
+    .css-treeview
+    {
+        -webkit-animation: webkit-adjacent-element-selector-bugfix infinite 1s;
+    }
+
+    @-webkit-keyframes webkit-adjacent-element-selector-bugfix
+    {
+        from
+        {
+            padding: 0;
+        }
+        to
+        {
+            padding: 0;
+        }
+    }
+}
+</style>
+<link href="{% static 'node_informer/css/jsontree.css' %}" rel="stylesheet">
+<script src="{% static 'node_informer/js/jsontree.js' %}"></script>
+
+
+</head>
+
+
+<body>
+
+<div class="fluid-container">
+     <nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+ 
+	 <div class="navbar-header">
+                 <img alt="Seagate" src="{% static 'node_informer/Seagate-logo.png' %}">
+      </div>
+
+      <ul class="nav navbar-nav">
+        <li><a href="#"><span class="glyphicon glyphicon-home" > </span>RazorUI</a></li>
+        <li><a href="#"><span class="glyphicon glyphicon-earphone" aria-hidden="true"></span> About</a></li>
+      </ul>
+
+       <form class="navbar-form navbar-left">
+                {% if messages %}
+                <div class="messages">
+                        <div class="alert alert-success alert-dismissible" role="alert" style="width: 400px;" >
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        {% for message in messages %}
+                        <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+                        {% endfor %}
+                        </div>
+                </div>
+                {% endif %}
+       </form>
+
+
+       <form class="navbar-form navbar-right" >
+        <a href="/data/"><button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>Refresh</button></a>
+        <a href="/logout/" ><button type="button" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-off" > </span> Logout</button></a>
+      </form>
+    </div>
+  </div>
+  </nav>
+ 
+
+
+  <div class="row">
+    <div class="col-md-3">
+	<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingOne">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Server
+        </a>
+      </h4>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+      <div class="panel-body">
+		<div  style="height:530px;overflow:auto;" >
+
+                        <div class="css-treeview">
+                                <ul>
+                                                        {% for server in server_list %}
+                                                                 <li><input type="checkbox" id={{server}} /><label for={{server}}>{{server}}</label>
+                                                                 <ul>
+                                                                 {% for node in node_list %}
+                                                                        {% if node.server_id = server.id %}
+                                                                        <li><a href="/{{node.node_name}}">{{node}}</a></li>
+                                                                        {% endif %}
+                                                                {% endfor %}
+                                                                </ul>
+                                                        </li>
+                                                        {% endfor %}
+                                </ul>
+                </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingThree">
+      <h4 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          cdu
+        </a>
+      </h4>
+    </div>
+    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+      <div class="panel-body">
+        CDU
+      </div>
+    </div>
+  </div>
+</div>
+    </div>
+  <div class="col-md-9">
+	
+		<ul class="nav nav-tabs nav-justified">
+    		<li class="active"><a data-toggle="pill" href="#data"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> Data</a></li>
+   		 <li><a data-toggle="pill" href="#metadata"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Metadata</a></li>
+    		<li><a data-toggle="pill" href="#console"><span class="glyphicon glyphicon-blackboard" aria-hidden="true"></span> Console</a></li>
+  		</ul>
+
+	 <div  class="well" style="height:600px;overflow:auto;background-color:#FFFFFF">	
+		<div class="tab-content">
+		  	<div id="data" class="tab-pane fade in active">
+  		  		<h3>Data</h3>
+  		  		<p>
+					<div id="tree"></div>
+				</p>
+ 		  	</div>
+		  	<div id="metadata" class="tab-pane fade">
+		  		
+		    		
+				<div class="container">
+  					<h2>Metadata</h2>
+  					<form class="form-horizontal" role="form">
+					
+						<div class="form-group">
+                                                <label for="os_version" >os_version</label>
+                                                <input type="text" class="form-control" id="os_version" >
+                                                </div>
+						
+						<div class="form-group">
+                                                <label for="storage_system">storage_system</label>
+                                                <input type="text" class="form-control" id="storage_system" >
+                                                </div>						
+						
+						<div class="form-group">
+                                                <label for="ip">ip</label>
+                                                <input type="text" class="form-control" id="ip" size="100">
+                                                </div>
+						
+   	 					<div class="form-group">
+      						<label for="cdu">cdu</label>
+      						<input type="text" class="form-control" id="cdu" size="100">	
+						</div>
+					
+						<div class="form-group">
+                                                <label for="provisioning_started">provisioning_started</label>
+                                                <input type="text" class="form-control" id="provisioning_started" size="100">
+                                                </div>
+
+						<div class="form-group">
+                                                <label for="provisioning_started_epoch">provisioning_started_epoch</label>
+                                                <input type="text" class="form-control" id="provisioning_started_epoch" size="100">
+                                                </div>
+		
+						<div class="form-group">
+                                                <label for="provision_status_code">provision_status_code</label>
+                                                <input type="text" class="form-control" id="provision_status_code" size="100">
+                                                </div>
+		
+						<div class="form-group">
+                                                <label for="provision_started">provision_started</label>
+                                                <input type="text" class="form-control" id="provision_started" size="100">
+                                                </div>
+
+						<div class="form-group">
+                                                <label for="provision_stage">provision_stage</label>
+                                                <input type="text" class="form-control" id="provision_stage" size="100">
+                                                </div>
+
+						<div class="form-group">
+                                                <label for="provision_pre_started">provision_pre_started</label>
+                                                <input type="text" class="form-control" id="provision_pre_started" size="100">
+                                                </div>
+						
+						<div class="form-group">
+                                                <label for="provision_completed">provision_completed</label>
+                                                <input type="text" class="form-control" id="provision_completed" size="100">
+                                                </div>
+					
+						<div class="form-group">
+                                                <label for="network_cfg">network_cfg</label>
+                                                <input type="text" class="form-control" id="network_cfg" size="70">
+                                                </div>
+
+    					<button type="submit" class="btn btn-primary">Submit</button>
+  					</form>
+				</div>
+				
+		  	</div>
+
+		  	<div id="console" class="tab-pane fade">
+		    		<h3>Console</h3>
+				
+		    		 <div id="frameholder">
+					<iframe src="https://134.6.26.84:8003/" style="background-color:white" scrolling="no" width="810" height="420"></iframe>
+				</div> 
+		 	</div>
+		</div>
+    	</div>
+    </div>
+</div>
+<div class="well" style="margin-bottom: 0;background-color:#FFFFFF"  >
+           <p align="center">@ 2015 Seagate Technology LLC | Legal</p>
+</div>
+
+</body>
+ <script type="text/javascript">
+                var json={{current|safe }};
+		var json_meta=json.metadata;
+		document.getElementById('os_version').placeholder =json_meta.os_version;
+		document.getElementById('storage_system').placeholder =json_meta.storage_system;
+		document.getElementById('ip').placeholder =json_meta.ip;
+		document.getElementById('provision_pre_started').placeholder =json_meta.provision_pre_started;
+		document.getElementById('provisioning_started').placeholder =json_meta.provisioning_started;
+		document.getElementById('provisioning_started_epoch').placeholder =json_meta.provisioning_started_epoch;
+		document.getElementById('provision_completed').placeholder =json_meta.provision_completed;
+		document.getElementById('provision_stage').placeholder =json_meta.provision_stage;
+		document.getElementById('provision_status_code').placeholder =json_meta.provision_status_code;
+		document.getElementById('provision_started').placeholder =json_meta.provision_started;
+		document.getElementById('network_cfg').placeholder =json_meta.network_cfg;
+		document.getElementById('cdu').placeholder = json_meta.cdu;
+        	document.getElementById('tree').innerHTML =  JSONTree.create(json);
+ </script>
+
+</html>
