@@ -77,13 +77,8 @@ WSGI_APPLICATION = 'rajor.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME':'node_info',
-        'USER':'root',
-        'PASSWORD':'dcouser',
-        'HOST':'',
-        'PORT':'',
-
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME':'node_info'
     }
 }
 

@@ -4,7 +4,6 @@ from node_informer.models import Server,Node
 import urllib2
 import json
 from django.template import RequestContext,loader
-from unidecode import unidecode
 from django.contrib.auth import authenticate,login,logout
 from django.core.context_processors import csrf
 from django.contrib import messages
